@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rayyan Imtiaz Khan | Aerospace & AI</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #08090a;
+            --bg-secondary: #121418;
+            --bg-card: rgba(22, 26, 33, 0.7);
+            --accent-cyan: #00f2fe;
+            --accent-blue: #4facfe;
+            --text-main: #f0f4f8;
+            --text-muted: #8a99ad;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --card-glow: rgba(0, 242, 254, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background Mesh Grid */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(8, 9, 10, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--text-main), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .cta-btn {
+            padding: 0.6rem 1.4rem;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: #000;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 242, 254, 0.3);
+        }
+
+        /* Main Container */
+        section {
+            padding: 7rem 10% 4rem 10%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 2.5rem;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            background: rgba(0, 242, 254, 0.08);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1.5px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin-bottom: 2.5rem;
+        }
+
+        /* 3D Tilt Card Component */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            border-color: rgba(0, 242, 254, 0.4);
+            box-shadow: 0 12px 30px var(--card-glow);
+        }
+
+        .card-type {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+
+        .card h3 {
+            font-size: 1.35rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .status-tag {
+            display: inline-block;
+            margin-top: 1.2rem;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .status-ongoing {
+            background: rgba(255, 170, 0, 0.15);
+            color: #ffaa00;
+            border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+
+        .status-upcoming {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .status-completed {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        /* About Section */
+        .about-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .lang-pills {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Mentorship Callout */
+        .mentorship-banner {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.08), rgba(79, 172, 254, 0.03));
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .mentorship-banner h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .mentorship-banner p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 10%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .about-box { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Rayyan Imtiaz Khan</div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#mentorship">Mentorship</a></li>
+            <li><a href="#logbook">Logbook</a></li>
+        </ul>
+        <a href="#mentorship" class="cta-btn">Book 1-on-1</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="badge">Aerospace Engineering & AI Automation</div>
+        <h1>Building Autonomous Systems & Intelligent Workflows.</h1>
+        <p>Second-year Aerospace Engineering student based in China. Specializing in autonomous rescue drone research, AI agent integrations, and empowering the next generation of students.</p>
+        <div>
+            <a href="#mentorship" class="cta-btn" style="padding: 0.8rem 1.8rem; font-size: 1rem;">Get Free Mentorship</a>
+        </div>
+    </section>
+
+    <!-- About Me -->
+    <section id="about">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-box">
+            <div>
+                <p style="font-size: 1.05rem; margin-bottom: 1rem;">
+                    I am dedicated to bridging physical aerospace engineering with digital intelligence. My academic journey in China centers on autonomous search-and-rescue systems for disaster response, alongside building practical AI tools that automate real-world workflows.
+                </p>
+                <p style="color: var(--text-muted);">
+                    When I am not in the lab or modeling in Autodesk Fusion 360, I am giving back as a mentor to students back home—helping them unlock their potential and navigate technical education.
+                </p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 0.8rem; font-size: 0.95rem; text-transform: uppercase; color: var(--text-muted);">Languages</h4>
+                <div class="lang-pills">
+                    <span class="pill">English (Fluent)</span>
+                    <span class="pill">Urdu (Native)</span>
+                    <span class="pill">Chinese (Proficient)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ongoing Research -->
+    <section id="research">
+        <h2 class="section-title">Research Lab</h2>
+        <div class="grid-layout">
+            <div class="card" data-tilt>
+                <div class="card-type">Aerospace Research</div>
+                <h3>Autonomous Search-and-Rescue Drone</h3>
+                <p>Developing an autonomous drone framework engineered specifically for earthquake disaster response and harsh environmental navigation. Focuses on spatial computer vision, path planning, and rapid rescue deployment.</p>
+                <span class="status-tag status-ongoing">• Active Research</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI & Automation Projects -->
+    <section id="projects">
+        <h2 class="section-title">Projects & AI Systems</h2>
+        <div class="grid-layout">
+            
+            <div class="card" data-tilt>
+                <div class="card-type">Automation / n8n</div>
+                <h3>n8n AI Medication Agent</h3>
+                <p>An automated health agent built using n8n to assist users with medication scheduling, dosage tracking, and medical query assistance through intelligent workflow triggers.</p>
+                <span class="status-tag status-completed">Completed</span>
+            </div>
+
+            <div class="card" data-tilt>
+                <div class="card-type">Healthcare AI</div>
+                <h3>AI Translation Bot for Chinese Hospitals</h3>
+                <p>A domain-specific translation assistant designed to break communication barriers in Chinese medical settings, enabling seamless doctor-patient interactions during healthcare consultations.</p>
+                <span class="status-tag status-completed">Completed</span>
+            </div>
+
+            <div class="card" data-tilt>
+                <div class="card-type">Flagship AI Assistant</div>
+                <h3>JARVIS — Fully Functional AI Assistant</h3>
+                <p>An upcoming all-in-one personal and business intelligence assistant. Designed to autonomously execute daily chores, manage business operations, and integrate directly with technical workflows.</p>
+                <span class="status-tag status-upcoming">In Development</span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Mentorship Hub -->
+    <section id="mentorship">
+        <div class="mentorship-banner">
+            <div class="badge" style="margin-bottom: 1rem;">100% Free Mentorship</div>
+            <h3>Unlock Your True Potential</h3>
+            <p>I offer free 1-on-1 mentorship sessions for students seeking guidance in engineering admissions, tech skill roadmaps, and personal development. Let’s chart your path forward together.</p>
+            <!-- Replace link below with your Calendly or Google Form link -->
+            <a href="mailto:your-email@domain.com" class="cta-btn" style="padding: 0.8rem 2rem; font-size: 1rem;">Schedule A Free Session</a>
+        </div>
+    </section>
+
+    <!-- Logbook / Personal Interests -->
+    <section id="logbook">
+        <h2 class="section-title">The Logbook</h2>
+        <div class="grid-layout">
+            <div class="card" data-tilt>
+                <div class="card-type">Exploration</div>
+                <h3>Motorcycle Expeditions</h3>
+                <p>Documenting long-distance scenic drives and rides across mountains and valleys—from Shenyang to Benxi and beyond.</p>
+            </div>
+
+            <div class="card" data-tilt>
+                <div class="card-type">Culture & Heritage</div>
+                <h3>Pashto Literature & Ancient Scripts</h3>
+                <p>Exploring classical Pashto proverbs, philosophy, and historical orthography such as the Bactrian script.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 Rayyan Imtiaz Khan. Built with zero dependencies, hosted on GitHub Pages.</p>
+    </footer>
+
+    <!-- 3D Card Tilt Effect JavaScript -->
+    <script>
+        const cards = document.querySelectorAll('[data-tilt]');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -8;
+                const rotateY = ((x - centerX) / centerX) * 8;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+            });
+        });
+    </script>
+</body>
+</html>
