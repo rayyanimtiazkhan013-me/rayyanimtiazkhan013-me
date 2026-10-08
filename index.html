@@ -1,686 +1,587 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rayyan Imtiaz Khan | Aerospace Engineering & AI Systems</title>
-
-    <!-- Google Fonts: Plus Jakarta Sans for crisp typography & JetBrains Mono for technical accents -->
+    <title>Rayyan Imtiaz Khan — Aerospace & AI Automation Engineer</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#08090a',
+                            surface: '#121418',
+                            card: 'rgba(22, 26, 33, 0.75)',
+                            border: 'rgba(255, 255, 255, 0.08)',
+                            cyan: '#00f2fe',
+                            blue: '#4facfe',
+                            muted: '#8a99ad',
+                            heading: '#f0f4f8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    backgroundImage: {
+                        'cyan-glow': 'radial-gradient(circle, rgba(0, 242, 254, 0.15) 0%, rgba(8, 9, 10, 0) 70%)',
+                        'grid-pattern': 'linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
         :root {
             --bg-primary: #08090a;
-            --bg-secondary: #0f1115;
-            --bg-card: rgba(18, 21, 28, 0.75);
-            --bg-card-hover: rgba(25, 30, 40, 0.85);
-            --bg-input: rgba(255, 255, 255, 0.03);
-            
+            --bg-secondary: #121418;
+            --bg-card: rgba(22, 26, 33, 0.75);
             --accent-cyan: #00f2fe;
             --accent-blue: #4facfe;
-            --accent-glow: rgba(0, 242, 254, 0.18);
-            
-            --text-main: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-highlight: rgba(0, 242, 254, 0.35);
-            
-            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
-
-        /* Crisp Typography Reset */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            font-size: 16px;
+            --text-main: #f0f4f8;
+            --text-muted: #8a99ad;
         }
 
         body {
             background-color: var(--bg-primary);
             color: var(--text-main);
-            font-family: var(--font-main);
-            line-height: 1.65;
-            letter-spacing: -0.011em;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
         }
 
-        /* Background Grid Pattern */
+        /* Ambient Grid Background */
         .bg-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            background-size: 36px 36px;
             background-image: 
-                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: -1;
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
         }
 
-        .bg-radial-glow {
-            position: fixed;
-            top: -15%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(0, 242, 254, 0.08) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: -1;
-            filter: blur(80px);
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 1.25rem 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(8, 9, 10, 0.85);
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(18, 20, 24, 0.7);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border-color);
-            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .logo {
-            font-weight: 800;
-            font-size: 1.15rem;
-            letter-spacing: -0.03em;
-            color: var(--text-main);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .glass-card {
+            background: rgba(22, 26, 33, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease-out;
         }
 
-        .logo-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--accent-cyan);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-cyan);
+        .glass-card:hover {
+            border-color: rgba(0, 242, 254, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(0, 242, 254, 0.15);
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2.25rem;
-            list-style: none;
+        /* 3D Tilt Card Base */
+        .tilt-card-container {
+            perspective: 1000px;
+        }
+        
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out;
         }
 
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.25s ease;
+        .tilt-card-content {
+            transform: translateZ(30px);
         }
 
-        .nav-links a:hover {
-            color: var(--accent-cyan);
-        }
-
-        .cta-btn {
-            padding: 0.65rem 1.4rem;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-            color: #04080e;
-            font-weight: 700;
-            font-size: 0.875rem;
-            text-decoration: none;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .cta-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--accent-glow);
-        }
-
-        /* Main Section Container */
-        section {
-            padding: 7rem 8% 4rem 8%;
-            max-width: 1240px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            margin-bottom: 3rem;
-        }
-
-        .section-tag {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            color: var(--accent-cyan);
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            margin-bottom: 0.5rem;
-            display: block;
-            font-weight: 500;
-        }
-
-        .section-title {
-            font-size: 2.25rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
-
-        .section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(to right, var(--border-color), transparent);
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 88vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            padding-top: 8rem;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            background: rgba(0, 242, 254, 0.05);
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            color: var(--accent-cyan);
-            margin-bottom: 1.75rem;
-        }
-
-        .hero-badge-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--accent-cyan);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.4; }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0.4; }
-        }
-
-        .hero h1 {
-            font-size: 3.75rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.04em;
-            max-width: 950px;
-            background: linear-gradient(135deg, #ffffff 30%, var(--accent-cyan) 100%);
+        /* Glowing text gradient */
+        .text-gradient {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 720px;
-            margin-bottom: 2.75rem;
-            font-weight: 400;
-            line-height: 1.7;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #08090a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1c222d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f2fe;
         }
 
-        /* 3D Card Architecture */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 2rem;
-            perspective: 1200px;
-        }
-
-        .card-3d {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 2.25rem;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.15s ease-out, border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        .card-3d:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-highlight);
-            box-shadow: 0 15px 35px var(--accent-glow);
-        }
-
-        .card-category {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            color: var(--accent-cyan);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .card-3d h3 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 0.85rem;
-            color: var(--text-main);
-            letter-spacing: -0.02em;
-        }
-
-        .card-3d p {
-            color: var(--text-secondary);
-            font-size: 0.975rem;
-            line-height: 1.65;
-            font-weight: 400;
-        }
-
-        /* Redesigned 3D Interactive About Me Card */
-        .about-card-3d {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 3rem;
-            perspective: 1200px;
-            transform-style: preserve-3d;
-            transition: transform 0.15s ease-out, border-color 0.3s ease, box-shadow 0.3s ease;
-            backdrop-filter: blur(16px);
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 3.5rem;
-            align-items: center;
-        }
-
-        .about-card-3d:hover {
-            border-color: var(--border-highlight);
-            box-shadow: 0 20px 45px var(--accent-glow);
-        }
-
-        .about-bio-heading {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 1rem;
-            letter-spacing: -0.02em;
-        }
-
-        .about-bio-text p {
-            color: var(--text-secondary);
-            font-size: 1.025rem;
-            line-height: 1.75;
-            margin-bottom: 1.25rem;
-        }
-
-        .about-bio-text strong {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        .profile-frame {
-            position: relative;
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            background: var(--bg-secondary);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
-            transform: translateZ(20px);
-        }
-
-        .profile-frame::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(8, 9, 10, 0.85) 0%, transparent 45%);
+        /* Glowing Mouse Spotlight */
+        #spotlight {
             pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 242, 254, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+            z-index: 10;
         }
 
-        .profile-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            filter: contrast(1.05) brightness(0.95);
-            transition: transform 0.5s ease, filter 0.5s ease;
+        /* Pulse Dot */
+        .pulse-dot {
+            box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.7);
+            animation: pulse 2s infinite;
         }
 
-        .about-card-3d:hover .profile-frame img {
-            transform: scale(1.03);
-            filter: contrast(1.1) brightness(1);
-        }
-
-        /* Language Badges */
-        .language-tags {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-            margin-top: 1.75rem;
-            transform: translateZ(15px);
-        }
-
-        .lang-badge {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-family: var(--font-mono);
-            color: var(--text-main);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: border-color 0.25s ease, background 0.25s ease;
-        }
-
-        .lang-badge:hover {
-            border-color: var(--accent-cyan);
-            background: rgba(0, 242, 254, 0.06);
-        }
-
-        .lang-level {
-            color: var(--accent-cyan);
-            font-weight: 600;
-            font-size: 0.75rem;
-        }
-
-        /* Contact Section & Form */
-        .contact-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 3.5rem;
-            backdrop-filter: blur(16px);
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .contact-email {
-            font-size: 1.25rem;
-            font-family: var(--font-mono);
-            color: var(--accent-cyan);
-            text-decoration: none;
-            font-weight: 500;
-            display: inline-block;
-            margin-bottom: 2.5rem;
-            border-bottom: 1px dashed var(--accent-cyan);
-            padding-bottom: 2px;
-            transition: opacity 0.25s;
-        }
-
-        .contact-email:hover {
-            opacity: 0.8;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
-            margin-bottom: 1.25rem;
-        }
-
-        input, textarea {
-            width: 100%;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            padding: 1rem 1.25rem;
-            border-radius: 12px;
-            color: var(--text-main);
-            font-family: var(--font-main);
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.25s ease, background 0.25s ease;
-        }
-
-        input:focus, textarea:focus {
-            border-color: var(--accent-cyan);
-            background: rgba(0, 242, 254, 0.03);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 140px;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border-color);
-            padding: 2.5rem 8%;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            font-family: var(--font-mono);
-        }
-
-        /* Responsive Breakpoints */
-        @media (max-width: 992px) {
-            .hero h1 { font-size: 3rem; }
-            .about-card-3d { grid-template-columns: 1fr; gap: 2.5rem; padding: 2.25rem; }
-            .profile-frame { max-width: 320px; margin: 0 auto; }
-        }
-
-        @media (max-width: 768px) {
-            nav { padding: 1rem 5%; }
-            .nav-links { display: none; }
-            section { padding: 5rem 5% 3rem 5%; }
-            .hero h1 { font-size: 2.35rem; }
-            .hero p { font-size: 1.05rem; }
-            .form-grid { grid-template-columns: 1fr; }
-            .contact-box { padding: 2rem 1.5rem; }
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 8px rgba(0, 242, 254, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(0, 242, 254, 0);
+            }
         }
     </style>
 </head>
-<body>
+<body class="bg-grid min-h-screen selection:bg-brand-cyan/20 selection:text-brand-cyan relative">
 
-    <div class="bg-grid"></div>
-    <div class="bg-radial-glow"></div>
+    <!-- Mouse Pointer Spotlight -->
+    <div id="spotlight"></div>
 
-    <!-- Navigation Bar -->
-    <nav>
-        <a href="#" class="logo">
-            <span class="logo-dot"></span>
-            Rayyan Imtiaz Khan
-        </a>
-        <ul class="nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#research">Research</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#logbook">Logbook</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-        <a href="#contact" class="cta-btn">Get In Touch</a>
-    </nav>
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-4 transition-all duration-300" id="main-header">
+        <div class="max-w-6xl mx-auto glass-panel rounded-2xl px-6 py-3.5 flex items-center justify-between">
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-cyan to-brand-blue flex items-center justify-center text-brand-dark font-mono font-bold text-lg shadow-lg shadow-brand-cyan/20 group-hover:scale-105 transition-transform">
+                    RK
+                </div>
+                <span class="font-bold text-lg tracking-tight text-brand-heading group-hover:text-brand-cyan transition-colors">
+                    Rayyan Khan
+                </span>
+            </a>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-badge">
-            <span class="hero-badge-dot"></span>
-            Aerospace Engineering & AI Systems
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-brand-muted">
+                <a href="#about" class="hover:text-brand-cyan transition-colors">About</a>
+                <a href="#research" class="hover:text-brand-cyan transition-colors">Research</a>
+                <a href="#projects" class="hover:text-brand-cyan transition-colors">AI Projects</a>
+                <a href="#logbook" class="hover:text-brand-cyan transition-colors">Logbook</a>
+                <a href="#contact" class="hover:text-brand-cyan transition-colors">Contact</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <a href="#contact" class="px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-brand-cyan to-brand-blue text-brand-dark hover:opacity-90 transition-opacity shadow-md shadow-brand-cyan/10 hidden sm:inline-block">
+                    Let's Connect
+                </a>
+                
+                <!-- Mobile Menu Button -->
+                <button id="menu-btn" class="md:hidden text-brand-muted hover:text-brand-heading p-2 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
         </div>
-        <h1>Bridging Aerospace Engineering with World-Class AI Automation.</h1>
-        <p>Engineering researcher and AI developer based in China—synthesizing autonomous UAV flight systems with state-of-the-art enterprise workflow automation.</p>
-        <div>
-            <a href="#contact" class="cta-btn" style="padding: 0.85rem 2rem; font-size: 0.95rem;">Discuss A Collaboration</a>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden max-w-6xl mx-auto mt-2 glass-panel rounded-2xl p-6 space-y-4 text-center text-brand-muted">
+            <a href="#about" class="block hover:text-brand-cyan py-1">About</a>
+            <a href="#research" class="block hover:text-brand-cyan py-1">Research</a>
+            <a href="#projects" class="block hover:text-brand-cyan py-1">AI Projects</a>
+            <a href="#logbook" class="block hover:text-brand-cyan py-1">Logbook</a>
+            <a href="#contact" class="block hover:text-brand-cyan py-1">Contact</a>
+        </div>
+    </header>
+
+    <section class="pt-36 pb-20 md:pt-48 md:pb-28 px-4 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <!-- Status Badge -->
+            <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full glass-panel border border-brand-cyan/20 text-xs font-mono text-brand-cyan mb-8">
+                <span class="w-2 h-2 rounded-full bg-brand-cyan pulse-dot"></span>
+                <span>Aerospace Engineering Student & AI Specialist • China</span>
+            </div>
+
+            <!-- Polished Headline -->
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-brand-heading leading-[1.15] mb-8">
+                Bridging Advanced Aerospace Engineering with <span class="text-gradient">Cutting-Edge AI Automation</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="max-w-3xl mx-auto text-base sm:text-lg md:text-xl text-brand-muted font-normal leading-relaxed mb-10">
+                Engineering Student & AI Automation Specialist based in China — Architecting Autonomous Drones & Next-Gen Intelligent Workflows.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+                <a href="#contact" class="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-brand-dark bg-gradient-to-r from-brand-cyan to-brand-blue hover:shadow-lg hover:shadow-brand-cyan/25 hover:scale-[1.02] transition-all flex items-center justify-center space-x-2">
+                    <span>Get In Touch</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
+                <a href="#projects" class="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-brand-heading glass-panel hover:bg-white/5 border border-white/10 hover:border-brand-cyan/30 transition-all flex items-center justify-center space-x-2">
+                    <span>Explore Systems</span>
+                    <i class="fa-solid fa-microchip text-brand-cyan text-sm"></i>
+                </a>
+            </div>
         </div>
     </section>
 
-    <!-- About Me Section (3D Tilt Card) -->
-    <section id="about">
-        <span class="section-tag">// Background & Identity</span>
-        <h2 class="section-title">About Me</h2>
-        
-        <div class="about-card-3d" data-tilt>
-            <div class="about-bio-text" style="transform: translateZ(25px);">
-                <div class="about-bio-heading">Rayyan Imtiaz Khan</div>
-                <p>
-                    Originally from <strong>Swat, Pakistan</strong>, I have been driven by a passion for technical systems and hardware innovation since childhood. My journey spans digital enterprise management—including high-scale e-commerce operations on platforms like Shopify (2022–2024)—to software consulting and AI agent design.
-                </p>
-                <p>
-                    Currently pursuing engineering studies in China, I focus on the intersection of physical robotics and artificial intelligence. Whether modeling aerodynamic structures or orchestrating automated agents, I engineer for reliability and real-world impact.
-                </p>
+    <section id="about" class="py-20 px-4 relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center space-x-3 mb-12">
+                <span class="text-brand-cyan font-mono text-sm font-semibold">// 01</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-brand-heading">About Me</h2>
+                <div class="h-px bg-brand-border flex-grow ml-4"></div>
+            </div>
 
-                <div class="language-tags">
-                    <div class="lang-badge">Pashto <span class="lang-level">(Native)</span></div>
-                    <div class="lang-badge">Urdu <span class="lang-level">(C2)</span></div>
-                    <div class="lang-badge">English <span class="lang-level">(C2)</span></div>
-                    <div class="lang-badge">Chinese <span class="lang-level">(B1)</span></div>
+            <!-- 3D Interactive Card Container -->
+            <div class="tilt-card-container">
+                <div class="tilt-card glass-card rounded-3xl p-6 sm:p-10 relative overflow-hidden grid grid-cols-1 md:grid-cols-12 gap-8 items-center" id="about-card">
+                    
+                    <!-- Gradient accent blur inside card -->
+                    <div class="absolute -top-20 -right-20 w-64 h-64 bg-brand-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <!-- Profile Image with sleek border glow -->
+                    <div class="tilt-card-content md:col-span-5 flex flex-col items-center">
+                        <div class="relative group w-full max-w-[280px] aspect-[3/4] rounded-2xl overflow-hidden border border-brand-cyan/30 shadow-2xl shadow-brand-cyan/10">
+                            <!-- Image overlay gradient -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent z-10 opacity-60"></div>
+                            <img 
+                                src="photorayyan.jpg" 
+                                alt="Rayyan Imtiaz Khan" 
+                                class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                                onerror="this.onerror=null; this.src='https://placehold.co/600x800/121418/00f2fe?text=Rayyan+Imtiaz+Khan';"
+                            />
+                            
+                            <div class="absolute bottom-4 left-4 right-4 z-20 text-center">
+                                <span class="text-xs font-mono text-brand-cyan bg-brand-dark/80 backdrop-blur-md px-3 py-1 rounded-full border border-brand-cyan/30">
+                                    Swat, Pakistan ➔ China
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Polished Bio Content -->
+                    <div class="tilt-card-content md:col-span-7 space-y-6">
+                        <h3 class="text-2xl font-bold text-brand-heading">
+                            Rayyan Imtiaz Khan
+                        </h3>
+                        <p class="text-brand-muted leading-relaxed text-sm sm:text-base">
+                            Born in Swat, Pakistan, Rayyan Imtiaz Khan has been driven by a lifelong passion for scientific innovation and technical problem-solving. Building on an entrepreneurial foundation in e-commerce (2022–2024) and independent tech consulting, he now operates at the intersection of Aerospace Engineering and AI Development in China. His focus centers on engineering autonomous rescue drones, domain-specific AI translation systems, and high-performance automation workflows.
+                        </p>
+
+                        <!-- Languages Badges -->
+                        <div class="pt-4 border-t border-brand-border">
+                            <span class="text-xs font-mono uppercase tracking-wider text-brand-muted block mb-3">Linguistic Proficiency</span>
+                            <div class="flex flex-wrap gap-2.5">
+                                <span class="px-3 py-1.5 rounded-lg text-xs font-medium glass-panel border border-brand-cyan/30 text-brand-heading">
+                                    Pashto <span class="text-brand-cyan text-[10px] font-mono ml-1">(Native)</span>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-lg text-xs font-medium glass-panel border border-white/10 text-brand-heading">
+                                    Urdu <span class="text-brand-blue text-[10px] font-mono ml-1">(C2)</span>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-lg text-xs font-medium glass-panel border border-white/10 text-brand-heading">
+                                    English <span class="text-brand-blue text-[10px] font-mono ml-1">(C2)</span>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-lg text-xs font-medium glass-panel border border-white/10 text-brand-heading">
+                                    Chinese <span class="text-brand-cyan/80 text-[10px] font-mono ml-1">(B1)</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="profile-frame">
-                <img src="20250607_164820.jpg" alt="Rayyan Imtiaz Khan" onerror="this.onerror=null; this.src='https://placehold.co/600x800/0f1115/00f2fe?text=Rayyan+Imtiaz+Khan';">
-            </div>
         </div>
     </section>
 
-    <!-- Research Lab Section -->
-    <section id="research">
-        <span class="section-tag">// Flight Systems & Hardware</span>
-        <h2 class="section-title">Research Lab</h2>
-        
-        <div class="cards-grid">
-            <div class="card-3d" data-tilt>
-                <div class="card-category">Active Research</div>
-                <h3>Autonomous Search-and-Rescue UAV</h3>
-                <p>Developing robust, autonomous search-and-rescue quadcopter architectures engineered for post-earthquake environments. Integrating spatial computer vision, path planning, and real-time obstacle avoidance in GPS-denied emergency response zones.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- AI & Automation Projects -->
-    <section id="projects">
-        <span class="section-tag">// Software & Automation</span>
-        <h2 class="section-title">AI Projects</h2>
-        
-        <div class="cards-grid">
-            <div class="card-3d" data-tilt>
-                <div class="card-category">n8n / Enterprise Automation</div>
-                <h3>AI Medication Management Agent</h3>
-                <p>An autonomous clinical assistant agent built using n8n. Features dynamic medical schedule triggers, dosage tracking algorithms, and natural language query support to streamline patient compliance.</p>
+    <section id="research" class="py-20 px-4 relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center space-x-3 mb-12">
+                <span class="text-brand-cyan font-mono text-sm font-semibold">// 02</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-brand-heading">Aerospace Research</h2>
+                <div class="h-px bg-brand-border flex-grow ml-4"></div>
             </div>
 
-            <div class="card-3d" data-tilt>
-                <div class="card-type">Healthcare Tech</div>
-                <h3>AI Hospital Translation Assistant</h3>
-                <p>A domain-specific real-time language model framework designed to resolve medical terminology barriers in Chinese hospital consults, facilitating clear patient-doctor communication.</p>
-            </div>
+            <div class="tilt-card-container">
+                <div class="tilt-card glass-card rounded-3xl p-8 sm:p-10 border border-brand-cyan/20 relative">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div>
+                            <div class="flex items-center space-x-3 mb-2">
+                                <span class="px-3 py-1 rounded-full text-xs font-mono bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/30">
+                                    Ongoing Research
+                                </span>
+                                <span class="text-xs font-mono text-brand-muted">UAV Flight Systems</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-brand-heading">Autonomous Search-and-Rescue Drone</h3>
+                        </div>
+                        <i class="fa-solid fa-plane-seeding text-3xl text-brand-cyan/60 hidden md:block"></i>
+                    </div>
 
-            <div class="card-3d" data-tilt>
-                <div class="card-type">Flagship AI Concept</div>
-                <h3>JARVIS Autonomous Executive Engine</h3>
-                <p>An upcoming context-aware personal assistant. Designed to orchestrate business workflows, execute systemic operational tasks, and interact directly with engineering software pipelines.</p>
-            </div>
-        </div>
-    </section>
+                    <p class="text-brand-muted text-base leading-relaxed mb-6">
+                        Engineering an autonomous UAV architecture tailored for earthquake disaster response and harsh atmospheric navigation. Integrates computer vision with dynamic path planning to operate efficiently in GPS-denied environments.
+                    </p>
 
-    <!-- The Logbook (Personal Interests) -->
-    <section id="logbook">
-        <span class="section-tag">// Heritage & Expeditions</span>
-        <h2 class="section-title">The Logbook</h2>
-        
-        <div class="cards-grid">
-            <div class="card-3d" data-tilt>
-                <div class="card-type">Expeditions</div>
-                <h3>Motorcycle Journeys</h3>
-                <p>Documenting long-distance motorcycle road trips through mountainous terrain and valleys—ranging from urban Shenyang to the scenic routes of Benxi and beyond.</p>
-            </div>
-
-            <div class="card-3d" data-tilt>
-                <div class="card-type">Cultural Research</div>
-                <h3>Pashto Literature & Ancient Epigraphy</h3>
-                <p>Studying classical Pashto philosophy, proverbs, and historical Eastern scripts, including the orthographic evolution of Bactrian epigraphy.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact">
-        <div class="contact-box">
-            <span class="section-tag" style="margin-bottom: 0.75rem;">// Direct Communication</span>
-            <h2 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.03em;">Get In Touch</h2>
-            <p style="color: var(--text-secondary); max-width: 540px; margin: 0 auto 1.5rem auto; font-size: 1rem;">
-                Have a project to discuss, research to collaborate on, or seeking technical guidance? Send a direct message below or email me directly.
-            </p>
-            
-            <a href="mailto:Rayyanimtiazofficial@gmail.com" class="contact-email">Rayyanimtiazofficial@gmail.com</a>
-
-            <form onsubmit="event.preventDefault(); const formMsg = document.getElementById('form-feedback'); formMsg.style.display='block';">
-                <div class="form-grid">
-                    <input type="text" placeholder="Your Name" required>
-                    <input type="email" placeholder="Your Email" required>
+                    <div class="flex flex-wrap gap-2 font-mono text-xs text-brand-cyan">
+                        <span class="bg-brand-surface px-3 py-1 rounded-md border border-white/5">Computer Vision</span>
+                        <span class="bg-brand-surface px-3 py-1 rounded-md border border-white/5">Dynamic Path Planning</span>
+                        <span class="bg-brand-surface px-3 py-1 rounded-md border border-white/5">PX4 Flight Stack</span>
+                        <span class="bg-brand-surface px-3 py-1 rounded-md border border-white/5">GPS-Denied Navigation</span>
+                    </div>
                 </div>
-                <textarea placeholder="Your Message or Project Details..." required></textarea>
-                <button type="submit" class="cta-btn" style="width: 100%; padding: 0.9rem; font-size: 1rem;">Send Message</button>
-            </form>
-            
-            <p id="form-feedback" style="display: none; color: var(--accent-cyan); margin-top: 1.25rem; font-family: var(--font-mono); font-size: 0.875rem;">
-                ✓ Message noted! Thank you for reaching out.
-            </p>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-        <p>© 2026 Rayyan Imtiaz Khan. Engineered with precision.</p>
+    <section id="projects" class="py-20 px-4 relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center space-x-3 mb-12">
+                <span class="text-brand-cyan font-mono text-sm font-semibold">// 03</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-brand-heading">AI Systems & Agents</h2>
+                <div class="h-px bg-brand-border flex-grow ml-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Project 1 -->
+                <div class="tilt-card-container">
+                    <div class="tilt-card glass-card rounded-2xl p-6 h-full flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <i class="fa-solid fa-notes-medical text-2xl text-brand-cyan"></i>
+                                <span class="px-2.5 py-1 rounded-md text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                    Completed
+                                </span>
+                            </div>
+                            <h3 class="text-lg font-bold text-brand-heading mb-3">n8n AI Medication Agent</h3>
+                            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+                                An intelligent healthcare automation agent built on n8n for medication tracking, dosage notifications, and medical query support.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 font-mono text-[11px] text-brand-muted">
+                            <span class="bg-brand-surface px-2 py-0.5 rounded border border-white/5">n8n</span>
+                            <span class="bg-brand-surface px-2 py-0.5 rounded border border-white/5">LLM Orchestration</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="tilt-card-container">
+                    <div class="tilt-card glass-card rounded-2xl p-6 h-full flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <i class="fa-solid fa-language text-2xl text-brand-blue"></i>
+                                <span class="px-2.5 py-1 rounded-md text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                    Completed
+                                </span>
+                            </div>
+                            <h3 class="text-lg font-bold text-brand-heading mb-3">AI Translation Bot for Chinese Hospitals</h3>
+                            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+                                A domain-tailored medical translation bot built to eliminate language barriers in hospital consultations between international patients and staff.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 font-mono text-[11px] text-brand-muted">
+                            <span class="bg-brand-surface px-2 py-0.5 rounded border border-white/5">Medical NLP</span>
+                            <span class="bg-brand-surface px-2 py-0.5 rounded border border-white/5">Python</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="tilt-card-container">
+                    <div class="tilt-card glass-card rounded-2xl p-6 h-full flex flex-col justify-between border-brand-cyan/30">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <i class="fa-solid fa-robot text-2xl text-brand-cyan"></i>
+                                <span class="px-2.5 py-1 rounded-md text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                                    In Development
+                                </span>
+                            </div>
+                            <h3 class="text-lg font-bold text-brand-heading mb-3">JARVIS — Autonomous AI Assistant</h3>
+                            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+                                A comprehensive personal and enterprise AI assistant engineered to execute daily operations, manage business tasks, and integrate with engineering workflows.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 font-mono text-[11px] text-brand-muted">
+                            <span class="bg-brand-surface px-2 py-0.5 rounded border border-white/5">Autonomous Agents</span>
+                            <span class="bg-brand-surface px-2 py-0.5 rounded border border-white/5">API Orchestration</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="logbook" class="py-20 px-4 relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center space-x-3 mb-12">
+                <span class="text-brand-cyan font-mono text-sm font-semibold">// 04</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-brand-heading">Logbook & Pursuits</h2>
+                <div class="h-px bg-brand-border flex-grow ml-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card rounded-2xl p-6 flex space-x-4 items-start">
+                    <div class="p-3 rounded-xl bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/20">
+                        <i class="fa-solid fa-motorcycle text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-brand-heading mb-1">Motorcycle Expeditions</h4>
+                        <p class="text-xs font-mono text-brand-cyan mb-2">Shenyang ➔ Benxi Route</p>
+                        <p class="text-brand-muted text-sm leading-relaxed">
+                            Exploring mountain highways across Liaoning province, testing endurance and capturing high-altitude landscapes.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 flex space-x-4 items-start">
+                    <div class="p-3 rounded-xl bg-brand-blue/10 text-brand-blue border border-brand-blue/20">
+                        <i class="fa-solid fa-book-bookmark text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-brand-heading mb-1">Pashto Literature & Ancient Scripts</h4>
+                        <p class="text-xs font-mono text-brand-blue mb-2">Bactrian Script & Epigraphy</p>
+                        <p class="text-brand-muted text-sm leading-relaxed">
+                            Researching historical linguistic roots, classical Pashto poetry, and ancient Bactrian philosophical texts.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 px-4 relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center space-x-3 mb-12">
+                <span class="text-brand-cyan font-mono text-sm font-semibold">// 05</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-brand-heading">Get In Touch</h2>
+                <div class="h-px bg-brand-border flex-grow ml-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                
+                <!-- Contact Direct Info -->
+                <div class="md:col-span-5 space-y-6">
+                    <div class="glass-card rounded-2xl p-6 space-y-4">
+                        <h3 class="text-xl font-bold text-brand-heading">Direct Channel</h3>
+                        <p class="text-brand-muted text-sm leading-relaxed">
+                            Interested in collaborating on aerospace robotics, custom AI agent deployments, or technical research? Reach out directly:
+                        </p>
+
+                        <div class="pt-2">
+                            <a href="mailto:Rayyanimtiazofficial@gmail.com" class="inline-flex items-center space-x-3 text-brand-cyan font-mono text-sm hover:underline break-all">
+                                <i class="fa-solid fa-envelope"></i>
+                                <span>Rayyanimtiazofficial@gmail.com</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 space-y-3">
+                        <h4 class="text-sm font-semibold text-brand-heading">Location</h4>
+                        <p class="text-xs text-brand-muted font-mono flex items-center space-x-2">
+                            <i class="fa-solid fa-location-dot text-brand-cyan"></i>
+                            <span>China (Academic Residency)</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="md:col-span-7">
+                    <form id="contact-form" class="glass-card rounded-2xl p-6 sm:p-8 space-y-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-mono text-brand-muted uppercase mb-2">Name</label>
+                                <input type="text" required placeholder="Your Name" class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-heading focus:outline-none focus:border-brand-cyan transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-brand-muted uppercase mb-2">Email</label>
+                                <input type="email" required placeholder="your@email.com" class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-heading focus:outline-none focus:border-brand-cyan transition-colors">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono text-brand-muted uppercase mb-2">Subject</label>
+                            <input type="text" required placeholder="Collaboration / Inquiry" class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-heading focus:outline-none focus:border-brand-cyan transition-colors">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono text-brand-muted uppercase mb-2">Message</label>
+                            <textarea rows="4" required placeholder="Details about your project or inquiry..." class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-heading focus:outline-none focus:border-brand-cyan transition-colors resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-blue text-brand-dark font-semibold text-sm hover:opacity-90 transition-opacity flex items-center justify-center space-x-2">
+                            <span>Send Message</span>
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-8 border-t border-brand-border text-center text-xs font-mono text-brand-muted">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>© <span id="year"></span> Rayyan Imtiaz Khan. All rights reserved.</p>
+            <p class="text-brand-muted">Engineered for Aerospace & AI Innovation</p>
+        </div>
     </footer>
 
-    <script>
-        /* Interactive 3D Tilt Script for Cards & About Box */
-        const tiltElements = document.querySelectorAll('[data-tilt]');
+    <!-- Interactive Toast Modal (Replaces alert()) -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="glass-panel border border-brand-cyan/40 px-5 py-4 rounded-xl shadow-2xl flex items-center space-x-3 text-brand-heading text-sm">
+            <i class="fa-solid fa-circle-check text-brand-cyan text-lg"></i>
+            <span id="toast-message">Message sent successfully!</span>
+        </div>
+    </div>
 
-        tiltElements.forEach(elem => {
-            elem.addEventListener('mousemove', (e) => {
-                const rect = elem.getBoundingClientRect();
+    <script>
+        // Set dynamic copyright year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Spotlight Mouse Effect
+        const spotlight = document.getElementById('spotlight');
+        window.addEventListener('mousemove', (e) => {
+            spotlight.style.left = `${e.clientX}px`;
+            spotlight.style.top = `${e.clientY}px`;
+        });
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 3D Card Tilt Effect Logic
+        const tiltCards = document.querySelectorAll('.tilt-card');
+
+        tiltCards.forEach(card => {
+            const container = card.parentElement;
+
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
 
                 const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                const rotateX = ((y - centerY) / centerY) * -6;
-                const rotateY = ((x - centerX) / centerX) * 6;
-
-                elem.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(8px)`;
-            });
-
-            elem.addEventListener('mouseleave', () => {
-                elem.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
-            });
-        });
-    </script>
-</body>
-</html>
+                const centerY = rect.height / 2
