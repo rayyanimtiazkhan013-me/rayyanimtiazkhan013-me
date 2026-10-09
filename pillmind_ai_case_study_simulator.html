@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PillMind AI — Autonomous Medication & Mood Assistant Case Study</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: '#080810',
+                        surface: '#0d0d18',
+                        card: '#131326',
+                        'card-border': 'rgba(255,255,255,0.08)',
+                        cyanGlow: '#00f2fe',
+                        blueGlow: '#4facfe',
+                        purpleGlow: '#7f00ff',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #080810;
+            color: #e2e8f0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glow Backgrounds */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 15% 20%, rgba(0, 242, 254, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 60%, rgba(127, 0, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 90%, rgba(79, 172, 254, 0.05) 0%, transparent 40%);
+        }
+
+        /* Glassmorphism Cards */
+        .glass-panel {
+            background: rgba(13, 13, 24, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel-glow {
+            background: rgba(13, 13, 24, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.12);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080810;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e1e38;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f2fe;
+        }
+
+        /* Glowing Text Effects */
+        .text-glow {
+            text-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+        }
+
+        /* Scan Line Animation for OCR */
+        @keyframes scan {
+            0% { top: 0%; opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { top: 95%; opacity: 0.8; }
+        }
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #00f2fe, #4facfe, transparent);
+            box-shadow: 0 0 15px #00f2fe;
+            animation: scan 2.5s ease-in-out infinite alternate;
+        }
+
+        /* Pulse Animation for Live Status */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+        .status-pulse {
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen">
+
+    <div class="ambient-bg"></div>
+
+    <header class="sticky top-0 z-50 w-full glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="../index.html" class="inline-flex items-center gap-2 text-slate-300 hover:text-cyanGlow transition-colors duration-200 text-sm font-semibold group">
+                <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to Portfolio
+            </a>
+
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-cyan-950/60 border border-cyan-500/30 text-cyan-300">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 status-pulse"></span>
+                    ACTIVE RE-BUILD (Google Play / SaaS)
+                </span>
+                <a href="#simulator" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:opacity-90 transition-opacity">
+                    Try Live Demo
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-24 space-y-16">
+
+        <section class="space-y-8">
+            <div class="space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-mono bg-purple-950/40 border border-purple-500/30 text-purple-300">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                    n8n AI Workflow & Patient Care Automation
+                </div>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
+                    PillMind AI <span class="bg-gradient-to-r from-cyanGlow via-blueGlow to-purpleGlow bg-clip-text text-transparent text-glow">— Autonomous Medication & Mood Assistant</span>
+                </h1>
+                <p class="text-lg sm:text-xl text-slate-300 max-w-4xl leading-relaxed">
+                    A multi-agent, vision-powered healthcare companion that decodes doctor handwritten prescriptions, manages pill inventory with automated Telegram/WhatsApp refills, tracks daily patient mood logs, and dispatches cron reminders.
+                </p>
+            </div>
+
+            <!-- Project Specs Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 glass-panel rounded-2xl">
+                <div>
+                    <span class="block text-xs font-mono text-slate-400 uppercase tracking-wider">Role</span>
+                    <span class="text-sm font-semibold text-white">Lead Architect & Engineer</span>
+                </div>
+                <div>
+                    <span class="block text-xs font-mono text-slate-400 uppercase tracking-wider">Primary Tech</span>
+                    <span class="text-sm font-semibold text-cyan-300">n8n, Gemini 1.5 Vision, Telegram API</span>
+                </div>
+                <div>
+                    <span class="block text-xs font-mono text-slate-400 uppercase tracking-wider">Data Engine</span>
+                    <span class="text-sm font-semibold text-white">SQLite / PostgreSQL & Flutter</span>
+                </div>
+                <div>
+                    <span class="block text-xs font-mono text-slate-400 uppercase tracking-wider">Commercial Target</span>
+                    <span class="text-sm font-semibold text-purple-300">Google Play Store & B2C SaaS</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulator" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2">
+                        <span class="text-cyanGlow">⚡</span> Interactive Live System Simulator
+                    </h2>
+                    <p class="text-sm text-slate-400">Test the core workflow nodes live inside this interactive sandbox.</p>
+                </div>
+
+                <!-- Simulator Tab Buttons -->
+                <div class="flex flex-wrap gap-2 p-1.5 glass-panel rounded-xl border border-slate-800">
+                    <button onclick="switchTab('tab-vision')" id="btn-tab-vision" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow-lg">
+                        📸 1. Prescription Vision
+                    </button>
+                    <button onclick="switchTab('tab-inventory')" id="btn-tab-inventory" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-2">
+                        💊 2. Pill Inventory
+                    </button>
+                    <button onclick="switchTab('tab-chat')" id="btn-tab-chat" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-2">
+                        💬 3. Chat & Mood
+                    </button>
+                    <button onclick="switchTab('tab-n8n')" id="btn-tab-n8n" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-2">
+                        ⚡ 4. n8n Node Graph
+                    </button>
+                </div>
+            </div>
+
+            <!-- SIMULATOR CONTAINER -->
+            <div class="glass-panel-glow rounded-2xl p-6 sm:p-8 min-h-[520px] relative overflow-hidden">
+                
+                <!-- TAB 1: PRESCRIPTION VISION OCR -->
+                <div id="tab-vision" class="tab-content space-y-6">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <!-- Left Column: Image Selection & Scan View -->
+                        <div class="lg:w-1/2 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                    <span>📄</span> Doctor Note & Prescription Input
+                                </h3>
+                                <span class="text-xs font-mono text-cyan-400">Gemini 1.5 Vision OCR</span>
+                            </div>
+
+                            <!-- Sample Prescription Selector -->
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="selectPrescription('sample1')" id="pres-btn-1" class="pres-select-btn p-2 text-left rounded-lg bg-slate-900/80 border border-cyan-500/50 text-xs hover:border-cyan-400 transition-all">
+                                    <span class="block font-bold text-white">Sample 1</span>
+                                    <span class="text-[10px] text-slate-400">Amoxicillin + Panadol</span>
+                                </button>
+                                <button onclick="selectPrescription('sample2')" id="pres-btn-2" class="pres-select-btn p-2 text-left rounded-lg bg-slate-900/80 border border-slate-800 text-xs hover:border-cyan-400 transition-all">
+                                    <span class="block font-bold text-white">Sample 2</span>
+                                    <span class="text-[10px] text-slate-400">Lipitor 20mg Night</span>
+                                </button>
+                                <button onclick="selectPrescription('sample3')" id="pres-btn-3" class="pres-select-btn p-2 text-left rounded-lg bg-slate-900/80 border border-slate-800 text-xs hover:border-cyan-400 transition-all">
+                                    <span class="block font-bold text-white">Sample 3</span>
+                                    <span class="text-[10px] text-slate-400">Handwritten Complex</span>
+                                </button>
+                            </div>
+
+                            <!-- Simulated Canvas Image View with Scanner -->
+                            <div class="relative h-64 rounded-xl border border-slate-700 bg-slate-950 flex items-center justify-center overflow-hidden group">
+                                <div id="scan-line" class="scan-line hidden"></div>
+                                <div id="prescription-preview" class="p-6 text-center space-y-3">
+                                    <div class="w-16 h-16 mx-auto rounded-full bg-cyan-950/60 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl font-bold">
+                                        💊
+                                    </div>
+                                    <div id="prescription-text-preview" class="font-mono text-xs text-slate-300 bg-slate-900/90 p-4 rounded-lg border border-slate-800 max-w-sm text-left">
+                                        <p class="font-bold text-cyan-300">Dr. H. Sharma, M.D.</p>
+                                        <p>Rx: Amoxicillin 500mg - 1 capsule TID (after meals) x 7 days.</p>
+                                        <p>Rx: Panadol 500mg - 1 tab PRN for fever.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="runVisionScan()" id="btn-run-ocr" class="w-full py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:brightness-110 transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                                Execute Vision LLM Parsing Workflow
+                            </button>
+                        </div>
+
+                        <!-- Right Column: Extracted Structured JSON Output -->
+                        <div class="lg:w-1/2 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                    <span>✨</span> Extracted Structured Data (JSON)
+                                </h3>
+                                <span id="ocr-status-tag" class="text-xs font-mono text-slate-400">Status: Ready</span>
+                            </div>
+
+                            <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 font-mono text-xs text-slate-300 h-80 overflow-y-auto relative">
+                                <pre id="json-output-display" class="text-cyan-300">
+{
+  "status": "awaiting_input",
+  "message": "Click 'Execute Vision LLM Parsing Workflow' to run Gemini Vision multimodal Extraction."
+}</pre>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs font-bold text-white">Parsed 2 Medications</p>
+                                    <p class="text-[11px] text-slate-400">Ready to automatically seed into inventory DB.</p>
+                                </div>
+                                <button onclick="syncExtractedToInventory()" id="btn-sync-inv" disabled class="px-4 py-2 rounded-lg text-xs font-bold bg-slate-800 text-slate-500 cursor-not-allowed transition-all">
+                                    Import to Inventory ➔
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: PILL INVENTORY & AUTO-REFILL -->
+                <div id="tab-inventory" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                💊 Live Medication Stock & Auto-Refill Engine
+                            </h3>
+                            <p class="text-xs text-slate-400">Decrease pill counts to trigger simulated real-time Telegram refill notifications.</p>
+                        </div>
+                        <button onclick="resetInventory()" class="px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors">
+                            Reset All Stock
+                        </button>
+                    </div>
+
+                    <!-- Inventory Cards Grid -->
+                    <div id="inventory-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Cards populated dynamically by JS -->
+                    </div>
+
+                    <!-- Simulated Telegram Refill Alert Box -->
+                    <div id="telegram-refill-alert" class="hidden glass-panel border border-amber-500/40 p-4 rounded-xl bg-amber-950/20 text-amber-200 flex items-start gap-3">
+                        <div class="text-2xl">🚨</div>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm text-white">Telegram Webhook Triggered</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">CRON ALERT</span>
+                            </div>
+                            <p id="telegram-alert-text" class="text-xs text-slate-300 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: LIVE CHATBOT & MOOD TRACKER -->
+                <div id="tab-chat" class="tab-content hidden space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Left 2 Cols: Telegram / WhatsApp Mock View -->
+                        <div class="lg:col-span-2 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                    💬 Telegram AI Assistant Interface
+                                </h3>
+                                <span class="text-xs font-mono text-emerald-400 flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 status-pulse"></span>
+                                    Bot Online
+                                </span>
+                            </div>
+
+                            <!-- Chat Window Box -->
+                            <div class="bg-slate-950 rounded-xl border border-slate-800 h-[360px] flex flex-col justify-between p-4">
+                                <!-- Chat Log Container -->
+                                <div id="chat-messages" class="space-y-3 overflow-y-auto pr-2 text-xs">
+                                    <!-- Initial Bot Message -->
+                                    <div class="flex items-start gap-2 max-w-[85%]">
+                                        <div class="w-7 h-7 rounded-full bg-cyan-600 flex items-center justify-center text-white font-bold text-xs shrink-0">
+                                            🤖
+                                        </div>
+                                        <div class="bg-slate-900 border border-slate-800 text-slate-200 p-3 rounded-2xl rounded-tl-none space-y-1">
+                                            <p class="font-bold text-cyan-300 text-[11px]">PillMind Assistant</p>
+                                            <p>Hello Rayyan! I am keeping track of your morning doses. Did you take your 500mg Amoxicillin today?</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Prompt Pills -->
+                                <div class="pt-3 border-t border-slate-900 space-y-2">
+                                    <div class="flex gap-2 overflow-x-auto pb-1">
+                                        <button onclick="sendQuickChat('I took my morning dose')" class="px-3 py-1 rounded-full text-[11px] bg-slate-900 border border-slate-800 text-slate-300 hover:border-cyan-500 whitespace-nowrap transition-colors">
+                                            ✅ Took my morning dose
+                                        </button>
+                                        <button onclick="sendQuickChat('Feeling anxious and fatigued today')" class="px-3 py-1 rounded-full text-[11px] bg-slate-900 border border-slate-800 text-slate-300 hover:border-cyan-500 whitespace-nowrap transition-colors">
+                                            😰 Feeling anxious & tired
+                                        </button>
+                                        <button onclick="sendQuickChat('How many pills left in stock?')" class="px-3 py-1 rounded-full text-[11px] bg-slate-900 border border-slate-800 text-slate-300 hover:border-cyan-500 whitespace-nowrap transition-colors">
+                                            📦 Stock Check
+                                        </button>
+                                    </div>
+
+                                    <!-- Chat Input Form -->
+                                    <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
+                                        <input type="text" id="chat-input-text" placeholder="Type a message or log how you feel..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors">
+                                        <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-colors">
+                                            Send
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Col: Real-time Mood Analytics Card -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                📊 Mood & Sentiment AI
+                            </h3>
+
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
+                                <div class="space-y-1">
+                                    <span class="text-xs text-slate-400">Current Sentiment Analysis</span>
+                                    <div id="mood-score-badge" class="text-xl font-bold text-emerald-400">
+                                        Calm / Stable (88%)
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-slate-400">Empathetic Response Score</span>
+                                        <span class="text-cyan-400 font-mono">94%</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden">
+                                        <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 w-[94%]"></div>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-800 space-y-1">
+                                    <span class="text-[10px] font-mono text-purple-400 uppercase">Recent Mood Log</span>
+                                    <p id="mood-log-history" class="text-xs text-slate-300">
+                                        "Patient reported mild fatigue; advised light hydration alongside evening dose."
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: N8N VISUAL WORKFLOW GRAPH -->
+                <div id="tab-n8n" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                ⚡ n8n Execution Pipeline Simulator
+                            </h3>
+                            <p class="text-xs text-slate-400">Click below to trace the execution step-by-step through n8n nodes.</p>
+                        </div>
+                        <button onclick="executeN8nPipeline()" id="btn-run-pipeline" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:brightness-110 transition-all shadow-md">
+                            ▶ Execute Full Node Pipeline
+                        </button>
+                    </div>
+
+                    <!-- Pipeline Node Visual Canvas -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 relative py-4">
+                        
+                        <!-- Node 1 -->
+                        <div id="n8n-node-1" class="n8n-node-card p-4 rounded-xl bg-slate-950 border border-slate-800 transition-all space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-mono text-slate-500">01. TRIGGER</span>
+                                <span class="w-2 h-2 rounded-full bg-slate-700 status-dot"></span>
+                            </div>
+                            <p class="text-xs font-bold text-white">Telegram / Cron Webhook</p>
+                            <p class="text-[10px] text-slate-400">Ingests patient photo or chat text.</p>
+                        </div>
+
+                        <!-- Node 2 -->
+                        <div id="n8n-node-2" class="n8n-node-card p-4 rounded-xl bg-slate-950 border border-slate-800 transition-all space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-mono text-slate-500">02. VISION LLM</span>
+                                <span class="w-2 h-2 rounded-full bg-slate-700 status-dot"></span>
+                            </div>
+                            <p class="text-xs font-bold text-white">Gemini 1.5 Vision</p>
+                            <p class="text-[10px] text-slate-400">Parses Rx handwriting & dosage.</p>
+                        </div>
+
+                        <!-- Node 3 -->
+                        <div id="n8n-node-3" class="n8n-node-card p-4 rounded-xl bg-slate-950 border border-slate-800 transition-all space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-mono text-slate-500">03. DATABASE</span>
+                                <span class="w-2 h-2 rounded-full bg-slate-700 status-dot"></span>
+                            </div>
+                            <p class="text-xs font-bold text-white">SQLite / Postgres Sync</p>
+                            <p class="text-[10px] text-slate-400">Updates inventory & pill counter.</p>
+                        </div>
+
+                        <!-- Node 4 -->
+                        <div id="n8n-node-4" class="n8n-node-card p-4 rounded-xl bg-slate-950 border border-slate-800 transition-all space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-mono text-slate-500">04. SENTIMENT</span>
+                                <span class="w-2 h-2 rounded-full bg-slate-700 status-dot"></span>
+                            </div>
+                            <p class="text-xs font-bold text-white">Mood Analyzer NLP</p>
+                            <p class="text-[10px] text-slate-400">Extracts sentiment & wellness status.</p>
+                        </div>
+
+                        <!-- Node 5 -->
+                        <div id="n8n-node-5" class="n8n-node-card p-4 rounded-xl bg-slate-950 border border-slate-800 transition-all space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-mono text-slate-500">05. DISPATCH</span>
+                                <span class="w-2 h-2 rounded-full bg-slate-700 status-dot"></span>
+                            </div>
+                            <p class="text-xs font-bold text-white">Telegram Outbound</p>
+                            <p class="text-[10px] text-slate-400">Sends reminder or low stock warning.</p>
+                        </div>
+                    </div>
+
+                    <!-- Terminal Output Console -->
+                    <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 font-mono text-xs space-y-1 h-36 overflow-y-auto">
+                        <div class="text-slate-500">// Pipeline Console Execution Log</div>
+                        <div id="n8n-console-log" class="text-cyan-400 space-y-1">
+                            > Pipeline initialized. Awaiting execution trigger...
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TECHNICAL CASE STUDY WRITEDOWN -->
+        <section class="space-y-12 border-t border-slate-800/80 pt-16">
+            
+            <div class="space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-mono bg-cyan-950/40 border border-cyan-500/30 text-cyan-300">
+                    DEEP ENGINEERING BREAKDOWN
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">
+                    System Architecture & Engineering Decisions
+                </h2>
+                <p class="text-slate-400 max-w-3xl">
+                    An in-depth explanation of how PillMind AI handles handwriting noise, state management across asynchronous webhooks, and scalable mobile deployment.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Section 1 -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-4">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 font-bold font-mono">
+                        01
+                    </div>
+                    <h3 class="text-xl font-bold text-white">The Engineering Challenge</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Medication non-adherence accounts for nearly 50% of treatment failures globally. Existing apps fail because they require manual data entry: typing complex medical names like <em class="text-cyan-300">"Levothyroxine 125mcg"</em> and setting up tedious alarms.
+                    </p>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        PillMind AI eliminates friction by combining <strong>zero-click prescription vision intake</strong> with conversational multi-channel reminders (Telegram & WhatsApp) that fit existing messaging habits.
+                    </p>
+                </div>
+
+                <!-- Section 2 -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-4">
+                    <div class="w-10 h-10 rounded-xl bg-purple-950/80 border border-purple-500/40 flex items-center justify-center text-purple-400 font-bold font-mono">
+                        02
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Multimodal Vision OCR Pipeline</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Doctor handwriting is notoriously challenging for traditional OCR (Tesseract). We integrated <strong>Gemini 1.5 Vision LLM</strong> via n8n HTTP Request nodes with structured JSON schema enforcement.
+                    </p>
+                    <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 font-mono text-[11px] text-cyan-300">
+                        { "type": "OBJECT", "required": ["drug_name", "dosage_mg", "frequency_per_day"] }
+                    </div>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        This guarantees clean payload outputs even when processing low-contrast smartphone photos or crumpled prescriptions.
+                    </p>
+                </div>
+
+                <!-- Section 3 -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-950/80 border border-blue-500/40 flex items-center justify-center text-blue-400 font-bold font-mono">
+                        03
+                    </div>
+                    <h3 class="text-xl font-bold text-white">State Management & Cron Refill Logic</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        The n8n orchestrator runs a high-frequency Cron scheduler that checks active inventory tables. When stock drops below a configurable threshold (e.g. 5 remaining capsules):
+                    </p>
+                    <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+                        <li>Generates an auto-refill order payload.</li>
+                        <li>Sends an instant interactive Telegram message with one-tap confirmation.</li>
+                        <li>Escalates to SMS/Voice fallback if unanswered after 4 hours.</li>
+                    </ul>
+                </div>
+
+                <!-- Section 4 -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-4">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold font-mono">
+                        04
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Commercialization & Google Play Roadmap</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        To transition from a prototype to a commercial healthcare product:
+                    </p>
+                    <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+                        <li><strong class="text-white">Flutter Mobile Client:</strong> Cross-platform Android/iOS app wrapped with local SQLite offline cache.</li>
+                        <li><strong class="text-white">HIPAA / Data Privacy Layer:</strong> On-device encryption for sensitive patient health records.</li>
+                        <li><strong class="text-white">Google Play Deployment:</strong> Packaging background push notification services for public release.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800/80 bg-slate-950/80 py-12 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="space-y-1 text-center sm:text-left">
+                <p class="text-sm font-bold text-white">PillMind AI — Engineering Showcase</p>
+                <p class="text-xs text-slate-400">Designed & Architected by <span class="text-cyan-400">Rayyan Imtiaz Khan</span></p>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="mailto:Rayyanimtiazofficial@gmail.com" class="px-4 py-2 rounded-xl text-xs font-semibold glass-panel text-slate-200 hover:text-cyanGlow hover:border-cyan-500/40 transition-all">
+                    ✉ Contact Author
+                </a>
+                <a href="#" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-slate-400 hover:text-white transition-colors">
+                    ↑ Back to Top
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* INTERACTIVE SIMULATOR JAVASCRIPT STATE & HANDLERS */
+        
+        // State Variables
+        let inventory = [
+            { id: 'amox', name: 'Amoxicillin', dose: '500mg', count: 6, max: 20, threshold: 4, schedule: '3x daily' },
+            { id: 'panadol', name: 'Panadol Extra', dose: '500mg', count: 14, max: 24, threshold: 5, schedule: 'PRN (Fever)' },
+            { id: 'lipitor', name: 'Lipitor', dose: '20mg', count: 3, max: 30, threshold: 5, schedule: '1x at Bedtime' }
+        ];
+
+        let selectedPrescription = 'sample1';
+        let extractedMedData = null;
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-2";
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if(activeBtn) {
+                activeBtn.className = "tab-btn px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow-lg";
+            }
+        }
+
+        // Tab 1: Vision OCR Selector
+        function selectPrescription(type) {
+            selectedPrescription = type;
+            const previewText = document.getElementById('prescription-text-preview');
+            
+            document.querySelectorAll('.pres-select-btn').forEach(btn => btn.classList.remove('border-cyan-500/50'));
+
+            if (type === 'sample1') {
+                document.getElementById('pres-btn-1').classList.add('border-cyan-500/50');
+                previewText.innerHTML = `<p class="font-bold text-cyan-300">Dr. H. Sharma, M.D.</p><p>Rx: Amoxicillin 500mg - 1 capsule TID (after meals) x 7 days.</p><p>Rx: Panadol 500mg - 1 tab PRN for fever.</p>`;
+            } else if (type === 'sample2') {
+                document.getElementById('pres-btn-2').classList.add('border-cyan-500/50');
+                previewText.innerHTML = `<p class="font-bold text-cyan-300">City Cardiology Clinic</p><p>Rx: Lipitor 20mg - 1 tablet daily before bedtime.</p><p>Refills: 3</p>`;
+            } else {
+                document.getElementById('pres-btn-3').classList.add('border-cyan-500/50');
+                previewText.innerHTML = `<p class="font-bold text-cyan-300">Emergency Care Note (Handwritten)</p><p>Rx: Metformin 850mg twice daily with breakfast & dinner.</p>`;
+            }
+        }
+
+        // Tab 1: Run Vision Scan
+        function runVisionScan() {
+            const scanLine = document.getElementById('scan-line');
+            const statusTag = document.getElementById('ocr-status-tag');
+            const jsonDisplay = document.getElementById('json-output-display');
+            const syncBtn = document.getElementById('btn-sync-inv');
+
+            scanLine.classList.remove('hidden');
+            statusTag.innerText = "Status: Vision LLM Processing...";
+            statusTag.className = "text-xs font-mono text-cyan-400 status-pulse";
+
+            jsonDisplay.innerText = "{\n  \"status\": \"processing\",\n  \"model\": \"gemini-1.5-vision\",\n  \"step\": \"extracting_text_bounding_boxes\"\n}";
+
+            setTimeout(() => {
+                scanLine.classList.add('hidden');
+                statusTag.innerText = "Status: Parse Complete (99.2% confidence)";
+                statusTag.className = "text-xs font-mono text-emerald-400";
+
+                if (selectedPrescription === 'sample1') {
+                    extractedMedData = [
+                        { name: "Amoxicillin", dose: "500mg", count: 21, schedule: "3x daily" },
+                        { name: "Panadol", dose: "500mg", count: 10, schedule: "PRN" }
+                    ];
+                } else if (selectedPrescription === 'sample2') {
+                    extractedMedData = [
+                        { name: "Lipitor", dose: "20mg", count: 30, schedule: "1x bedtime" }
+                    ];
+                } else {
+                    extractedMedData = [
+                        { name: "Metformin", dose: "850mg", count: 60, schedule: "2x daily" }
+                    ];
+                }
+
+                jsonDisplay.innerText = JSON.stringify({
+                    timestamp: new Date().toISOString(),
+                    prescription_source: selectedPrescription,
+                    confidence_score: 0.992,
+                    extracted_medications: extractedMedData
+                }, null, 2);
+
+                syncBtn.disabled = false;
+                syncBtn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-all shadow-md";
+            }, 1800);
+        }
+
+        // Sync extracted to Tab 2 Inventory
+        function syncExtractedToInventory() {
+            if (!extractedMedData) return;
+
+            extractedMedData.forEach(item => {
+                const existing = inventory.find(i => i.name.toLowerCase() === item.name.toLowerCase());
+                if (existing) {
+                    existing.count += item.count;
+                } else {
+                    inventory.push({
+                        id: item.name.toLowerCase().replace(/\s+/g, ''),
+                        name: item.name,
+                        dose: item.dose,
+                        count: item.count,
+                        max: item.count,
+                        threshold: 5,
+                        schedule: item.schedule
+                    });
+                }
+            });
+
+            renderInventory();
+            switchTab('tab-inventory');
+        }
+
+        // Tab 2: Render Inventory Cards
+        function renderInventory() {
+            const grid = document.getElementById('inventory-grid');
+            grid.innerHTML = '';
+
+            inventory.forEach(med => {
+                const isLow = med.count <= med.threshold;
+                const pct = Math.round((med.count / med.max) * 100);
+
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl bg-slate-950 border ${isLow ? 'border-amber-500/50 bg-amber-950/10' : 'border-slate-800'} space-y-3 transition-all`;
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="font-bold text-sm text-white">${med.name}</p>
+                            <p class="text-[11px] font-mono text-cyan-400">${med.dose} • ${med.schedule}</p>
+                        </div>
+                        <span class="text-xs font-mono font-bold px-2 py-0.5 rounded ${isLow ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-800 text-slate-300'}">
+                            ${med.count} left
+                        </span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden">
+                        <div class="h-full ${isLow ? 'bg-amber-400' : 'bg-cyan-400'} transition-all duration-300" style="width: ${pct}%"></div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <button onclick="changeStock('${med.id}', -1)" class="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-xs text-slate-300 hover:border-cyan-500 transition-all">
+                            Take Dose (-1)
+                        </button>
+                        <button onclick="changeStock('${med.id}', 10)" class="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-xs text-slate-300 hover:border-cyan-500 transition-all">
+                            +10 Stock
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            checkRefillAlerts();
+        }
+
+        function changeStock(id, delta) {
+            const med = inventory.find(i => i.id === id);
+            if (med) {
+                med.count = Math.max(0, med.count + delta);
+                renderInventory();
+            }
+        }
+
+        function checkRefillAlerts() {
+            const lowMeds = inventory.filter(i => i.count <= i.threshold);
+            const alertBox = document.getElementById('telegram-refill-alert');
+            const alertText = document.getElementById('telegram-alert-text');
+
+            if (lowMeds.length > 0) {
+                alertBox.classList.remove('hidden');
+                alertText.innerHTML = `Low stock warning triggered for <strong>${lowMeds.map(m => m.name).join(', ')}</strong>. Automated auto-refill draft order sent to Telegram patient inbox.`;
+            } else {
+                alertBox.classList.add('hidden');
+            }
+        }
+
+        function resetInventory() {
+            inventory = [
+                { id: 'amox', name: 'Amoxicillin', dose: '500mg', count: 6, max: 20, threshold: 4, schedule: '3x daily' },
+                { id: 'panadol', name: 'Panadol Extra', dose: '500mg', count: 14, max: 24, threshold: 5, schedule: 'PRN (Fever)' },
+                { id: 'lipitor', name: 'Lipitor', dose: '20mg', count: 3, max: 30, threshold: 5, schedule: '1x at Bedtime' }
+            ];
+            renderInventory();
+        }
+
+        // Tab 3: Chat Logic
+        function sendQuickChat(msg) {
+            document.getElementById('chat-input-text').value = msg;
+            handleChatSubmit(new Event('submit'));
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input-text');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+
+            // Append User Msg
+            const userMsg = document.createElement('div');
+            userMsg.className = "flex items-start justify-end gap-2 text-xs";
+            userMsg.innerHTML = `
+                <div class="bg-cyan-600/30 border border-cyan-500/40 text-slate-100 p-3 rounded-2xl rounded-tr-none">
+                    <p>${text}</p>
+                </div>
+            `;
+            chatMessages.appendChild(userMsg);
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Generate AI Response
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = "flex items-start gap-2 max-w-[85%] text-xs";
+                
+                let reply = "I've logged that in your healthcare record.";
+                if (text.toLowerCase().includes('dose') || text.toLowerCase().includes('took')) {
+                    reply = "Great job! I've updated your Amoxicillin inventory counter. Your next dose is scheduled for 8:00 PM.";
+                    if(inventory[0]) inventory[0].count = Math.max(0, inventory[0].count - 1);
+                    renderInventory();
+                } else if (text.toLowerCase().includes('anxious') || text.toLowerCase().includes('tired')) {
+                    reply = "I hear you, Rayyan. Fatigue can sometimes accompany antibiotic treatments. Make sure to stay hydrated and rest up!";
+                    document.getElementById('mood-score-badge').innerText = "Anxious / Mild Fatigue (62%)";
+                    document.getElementById('mood-score-badge').className = "text-xl font-bold text-amber-400";
+                    document.getElementById('mood-log-history').innerText = `"${text}" logged at ${new Date().toLocaleTimeString()}`;
+                } else if (text.toLowerCase().includes('stock')) {
+                    reply = `Current Stock: ${inventory.map(i => `${i.name}: ${i.count}`).join(', ')}.`;
+                }
+
+                botMsg.innerHTML = `
+                    <div class="w-7 h-7 rounded-full bg-cyan-600 flex items-center justify-center text-white font-bold text-xs shrink-0">🤖</div>
+                    <div class="bg-slate-900 border border-slate-800 text-slate-200 p-3 rounded-2xl rounded-tl-none space-y-1">
+                        <p class="font-bold text-cyan-300 text-[11px]">PillMind Assistant</p>
+                        <p>${reply}</p>
+                    </div>
+                `;
+                chatMessages.appendChild(botMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 600);
+        }
+
+        // Tab 4: n8n Pipeline Execution Simulator
+        function executeN8nPipeline() {
+            const consoleLog = document.getElementById('n8n-console-log');
+            consoleLog.innerHTML = '> Starting n8n workflow execution pipeline...';
+
+            const nodes = ['n8n-node-1', 'n8n-node-2', 'n8n-node-3', 'n8n-node-4', 'n8n-node-5'];
+            
+            nodes.forEach((id, index) => {
+                setTimeout(() => {
+                    nodes.forEach(n => document.getElementById(n).className = "n8n-node-card p-4 rounded-xl bg-slate-950 border border-slate-800 transition-all space-y-2");
+                    
+                    const activeNode = document.getElementById(id);
+                    activeNode.className = "n8n-node-card p-4 rounded-xl bg-slate-900 border border-cyan-500 text-cyan-300 shadow-lg shadow-cyan-500/20 space-y-2";
+                    
+                    const stepNames = [
+                        "1. Ingesting Webhook Payload from Telegram API...",
+                        "2. Invoking Gemini 1.5 Vision LLM OCR Node...",
+                        "3. Syncing extracted data to SQLite inventory table...",
+                        "4. Evaluating patient mood sentiment vector...",
+                        "5. Dispatching automated response back to Telegram user!"
+                    ];
+                    
+                    consoleLog.innerHTML += `<br>> [STEP ${index + 1}] ${stepNames[index]}`;
+                }, (index + 1) * 700);
+            });
+        }
+
+        // Initial Load Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            renderInventory();
+            selectPrescription('sample1');
+        });
+    </script>
+</body>
+</html>
